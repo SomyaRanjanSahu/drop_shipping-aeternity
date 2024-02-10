@@ -1,0 +1,28 @@
+{
+  "short_name": "æpp",
+  "name": "æpp boilerplate",
+	"start_url": ".",
+  "display": "standalone",
+	"status_bar": "#311b58",
+  "theme_color": "#f7296e",
+	"orientation": "portrait",
+  "background_color": "#ffffff",
+	"description": "A ReactJS boilerplate to build æpps in the æternity ecosystem.",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "static/media/icon/android-chrome-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+    },
+    {
+      "src": "static/media/icon/android-chrome-256x256.png",
+			"sizes": "256x256",
+			"type": "image/png"
+    }
+  ]
+}

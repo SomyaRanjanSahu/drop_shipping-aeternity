@@ -1,0 +1,47 @@
+@compiler >= 6
+
+include "String.aes"
+
+contract SmartRealEstate =
+  record rent = { owner_address : address
+                , tenant_address : address
+                , price : int
+                , is_paid : bool
+                , name : string
+                , property_address : string }
+
+  type state = map(address, rent)
+  
+  entrypoint init() : state = {}
+
+  stateful entrypoint add_property(name : string, price : int, property_address : string) =
+    let property_info = { owner_address = Call.caller
+                        , tenant_address = Call.caller
+                        , price = price
+                        , is_paid = false
+                        , name = name
+                        , property_address = property_address }
+    put(state{ [Call.caller] = property_info })
+
+  entrypoint getproperty() : option(rent) =
+    Map.lookup(Call.caller, state)
+
+  payable stateful entrypoint pay_rent(owner_address : address, name : string) =
+    let owner_property =
+      switch(Map.lookup(owner_address, state))
+        None    => abort("No property")
+        Some(e) => e
+
+    // Check if the property name matches
+    require(owner_property.name == name, "Property not found for the specified name")
+    
+
+    // Check if the rent is not already paid
+    require(!owner_property.is_paid, "Rent is already paid")
+    require(Contract.balance >= owner_property.price, String.concat("Not enough money to pay this rent: ", name))
+    // Pay the rent
+    Chain.spend(owner_address, owner_property.price)
+
+    // Update the property information
+    let updated_property = owner_property{ tenant_address = Call.caller, is_paid = true }
+    put(state{ [owner_address]  = updated_property })
